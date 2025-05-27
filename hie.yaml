@@ -1,0 +1,22 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "fpfes2025:lib"
+
+    - path: "./app/Main.hs"
+      component: "fpfes2025:exe:fpfes2025"
+
+    - path: "./app/Paths_fpfes2025.hs"
+      component: "fpfes2025:exe:fpfes2025"
+
+    - path: "./app/pandi/Main.hs"
+      component: "fpfes2025:exe:pandi"
+
+    - path: "./app/pandi/Paths_fpfes2025.hs"
+      component: "fpfes2025:exe:pandi"
+
+    - path: "./test"
+      component: "fpfes2025:test:fpfes2025-doctest"
+
+    - path: "./test"
+      component: "fpfes2025:test:fpfes2025-test"

@@ -1,0 +1,109 @@
+name:                fpfes2025
+version:             0.0.0
+github:              nobsun/fpfes2025
+license:             BSD3
+author:              Nobuo Yamashita
+maintainer:          nobsun@sampou.org
+copyright:           © 2024, Nobuo Yamashita
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Experiment
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/nobsun/fpfes2025#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- unicode-show
+- bytestring
+- utf8-string
+- time
+- hspec
+- main-tester
+- doctest
+- aeson
+- array
+- containers
+- constraints
+- extra
+- fgl
+- free
+- gloss
+- hmatrix
+- mtl
+- recursion-schemes
+- split
+- text
+- vector
+- directory
+- exceptions
+- filepath
+- process
+- stm
+
+language: GHC2021
+
+default-extensions:
+- ImplicitParams
+- ImportQualifiedPost
+- LambdaCase
+- LexicalNegation
+- MultiWayIf
+- NPlusKPatterns
+- OverloadedStrings
+- DataKinds
+- PolyKinds
+- NoStarIsType
+- TypeFamilyDependencies
+- UndecidableInstances
+- CPP
+
+ghc-options:
+- -Wall
+- -Wno-unticked-promoted-constructors
+- -Wno-unused-imports
+- -Wno-unused-top-binds
+- -Wno-orphans
+
+library:
+  source-dirs: src
+
+executables:
+  pandi:
+    main:               Main.hs
+    source-dirs:        app/pandi
+    ghc-options:
+    - -rtsopts
+    dependencies:
+    - fpfes2025
+
+  fpfes2025:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -rtsopts
+    dependencies:
+    - fpfes2025
+
+tests:
+  fpfes2025-test:
+    main:                spec.hs
+    source-dirs:         test
+    dependencies:
+    - fpfes2025
+    - hspec
+    - main-tester
+
+  fpfes2025-doctest:
+    main:                doctests.hs
+    source-dirs:         test
+    dependencies:
+    - fpfes2025
+    - doctest

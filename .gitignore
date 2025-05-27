@@ -1,0 +1,11 @@
+.stack-work/
+dist-new/
+fpfes2025.cabal
+*.log
+.curproj
+.curname
+!programming_session.log
+core
+*.hi
+*.o
+*~
