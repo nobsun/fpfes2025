@@ -63,8 +63,10 @@ math: katex
 |--|--|--|
 |思考|トップダウン|ボトムアップ|
 |時間|静的|動的|
-|計算|関数適用|命令順次実行|
-|構文|関数合成演算子`.`|命令区切り子`;`|
+|状態|明示的|暗黙的|
+|型付|静的|動的|
+|計算|関数適用|命令実行|
+|区切|関数合成演算子`.`|命令区切り子`;`|
 
 フォン・ノイマン型計算機を前提としない空想の世界
 
@@ -84,15 +86,29 @@ $$
 \;
 $$
 
-**N.B.** 「命令型」は、この資料独自の用語法
+**N.B.** 「命令型」は、この資料独自の（オレオレ）用語法
 
 ---
-## Haskellは命令も書ける
+## Haskellプログラミング $\ne$ 関数プログラミング
+
+Haskellは命令も書ける
 
 ```haskell
 main :: IO ()
 main = putStrLn "こんにちは世界"
 ```
+逐次実行構文
+```haskell
+main :: IO ()
+main = do 
+    { inp <- getContents                -- ^ 標準入力の内容取得 inp :: String
+    ; let xs = words inp                -- ^ words :: String -> [String]
+    ; ys <- return $ map (read @Int) xs -- ^ map (read @Int) :: [String] -> [Int]
+    ; ys <- return $ scanl1 (+) ys      -- ^ 累積和列
+    ; forM_ ys print                    -- ^ forM_ :: [Int] -> (Int -> IO ()) -> IO ()
+    }
+```
+---
 
 ---
 ## 対話（dialogue）
