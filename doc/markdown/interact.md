@@ -50,6 +50,43 @@ math: katex
 </div>
 
 ---
+
+
+---
+## モチベーション
+$$
+\;
+$$
+
+```
+main :: IO ()
+```
+$$
+\;\\
+\;
+$$
+> おおもとが「関数」ではなく「命令」！？
+>
+> 関数的プログラミングがしたい
+
+---
+## モチベーション
+
+「関数」を「命令」にしてくれる関数
+
+```haskell
+interact :: (String -> String) -> IO ()
+```
+を使って
+```haskell
+someFunc :: String -> String
+```
+をプログラムしよう
+```haskell
+main = interact someFunc
+```
+
+---
 ## 関数的（functional）
 
 > **Functional**(also called **right-unique** or **univalent**): for all $x \in X$ and all $y,z \in Y$, if $xRy$ and $xRz$ then $y=z$.
@@ -91,21 +128,15 @@ $$
 ---
 ## Haskellプログラミング $\ne$ 関数プログラミング
 
-Haskellは命令も書ける
+Haskellで命令的プログラムも書ける
 
 ```haskell
 main :: IO ()
-main = putStrLn "こんにちは世界"
-```
-逐次実行構文
-```haskell
-main :: IO ()
 main = do 
-    { inp <- getContents                -- ^ 標準入力の内容取得 inp :: String
-    ; let xs = words inp                -- ^ words :: String -> [String]
-    ; ys <- return $ map (read @Int) xs -- ^ map (read @Int) :: [String] -> [Int]
-    ; ys <- return $ scanl1 (+) ys      -- ^ 累積和列
-    ; forM_ ys print                    -- ^ forM_ :: [Int] -> (Int -> IO ()) -> IO ()
+    { inp <- getContents
+    ; let xs = map (read @Int) $ words inp
+    ; let ys = scanl1 (+) xs
+    ; forM_ ys print
     }
 ```
 ---

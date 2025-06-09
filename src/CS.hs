@@ -18,7 +18,7 @@ module CS
 type Server  = [Request] -> [Response]
 type Service = Request -> Response
 
-server :: (Request -> Response) -> Server
+server :: Service -> Server
 server = map
 
 type Client = [Response] -> [Request]

@@ -3,17 +3,53 @@ cradle:
     - path: "./src"
       component: "fpfes2025:lib"
 
+    - path: "./app/compare-server/Main.hs"
+      component: "fpfes2025:exe:compare-server"
+
+    - path: "./app/compare-server/Paths_fpfes2025.hs"
+      component: "fpfes2025:exe:compare-server"
+
     - path: "./app/Main.hs"
       component: "fpfes2025:exe:fpfes2025"
 
     - path: "./app/Paths_fpfes2025.hs"
       component: "fpfes2025:exe:fpfes2025"
 
+    - path: "./app/interactive-sort/Main.hs"
+      component: "fpfes2025:exe:interactive-sort"
+
+    - path: "./app/interactive-sort/Paths_fpfes2025.hs"
+      component: "fpfes2025:exe:interactive-sort"
+
+    - path: "./app/io/Main.hs"
+      component: "fpfes2025:exe:io"
+
+    - path: "./app/io/Paths_fpfes2025.hs"
+      component: "fpfes2025:exe:io"
+
+    - path: "./app/isort/Main.hs"
+      component: "fpfes2025:exe:isort"
+
+    - path: "./app/isort/Paths_fpfes2025.hs"
+      component: "fpfes2025:exe:isort"
+
     - path: "./app/pandi/Main.hs"
       component: "fpfes2025:exe:pandi"
 
     - path: "./app/pandi/Paths_fpfes2025.hs"
       component: "fpfes2025:exe:pandi"
+
+    - path: "./app/simple/Main.hs"
+      component: "fpfes2025:exe:simple"
+
+    - path: "./app/simple/Paths_fpfes2025.hs"
+      component: "fpfes2025:exe:simple"
+
+    - path: "./app/upcase-server/Main.hs"
+      component: "fpfes2025:exe:upcase-server"
+
+    - path: "./app/upcase-server/Paths_fpfes2025.hs"
+      component: "fpfes2025:exe:upcase-server"
 
     - path: "./test"
       component: "fpfes2025:test:fpfes2025-doctest"
