@@ -77,6 +77,14 @@ library:
   source-dirs: src
 
 executables:
+  checkbuffering:
+    main:               Main.hs
+    source-dirs:        app/checkbuffering
+    ghc-options:
+    - -rtsopts
+    dependencies:
+    - fpfes2025
+
   compare-server:
     main:               Main.hs
     source-dirs:        app/compare-server

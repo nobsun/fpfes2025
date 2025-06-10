@@ -3,6 +3,12 @@ cradle:
     - path: "./src"
       component: "fpfes2025:lib"
 
+    - path: "./app/checkbuffering/Main.hs"
+      component: "fpfes2025:exe:checkbuffering"
+
+    - path: "./app/checkbuffering/Paths_fpfes2025.hs"
+      component: "fpfes2025:exe:checkbuffering"
+
     - path: "./app/compare-server/Main.hs"
       component: "fpfes2025:exe:compare-server"
 

@@ -50,7 +50,16 @@ math: katex
 </div>
 
 ---
+## 目次
 
+1. モチベーション：関数的に書きたい
+   - 「関数的」のお気持ち
+2. お題：
+   - AtCoder提出プログラムの雛形
+   - 状態遷移系のステップ実行
+   - [Interactive Sorting](https://atcoder.jp/contests/practice/tasks/practice_2)
+3. まとめ：
+   - Laziness
 
 ---
 ## モチベーション
@@ -128,7 +137,7 @@ $$
 ---
 ## Haskellプログラミング $\ne$ 関数プログラミング
 
-Haskellで命令的プログラムも書ける
+Haskellでは、命令的に書ける
 
 ```haskell
 main :: IO ()
@@ -140,27 +149,91 @@ main = do
     }
 ```
 ---
+## お題： AtCoder提出プログラムの雛形
+
+[Welcome to AtCoder](https://atcoder.jp/contests/practice/tasks/practice_1)
+
+> **入力**
+> 
+> 入力は以下の形式で与えられる
+> ```
+> a
+> b c
+> s
+> ```
+> **出力**
+> 
+> $a+b+c$ と $s$ を空白区切りで1行に出力せよ。
 
 ---
-## 対話（dialogue）
+```haskell
+type I = String
+type O = String
 
-対話：メッセージのやりとりの繰り返し
+type Dom   = ([I],I)
+type Codom = [O]
 
-クライアント/サーバー
+type Solver = Dom -> Codom
+
+solve :: Solver
+solve = \ case
+  (abc,s) -> [show $ sum $ read @Int <$> abc, s]
+
+main :: IO ()
+main = interact (detokenize . encode . solve . decode . entokenize)
+       --------
+```
+(つづく)
+
+---
+(つづき)
+```haskell
+decode :: [[I]] -> Dom
+decode = \ case
+  [a]:[b,c]:[s]:_ -> ([a,b,c], s)
+  _               -> error "invalid input"
+
+encode :: Codom -> [[O]]
+encode = \ case
+  rs -> [rs]
+
+entokenizer :: AsToken a => String -> [[a]]
+entokenizer = map read . lines
+
+detokenizer :: AsToken a => [[a]] -> String
+detokenizer = unlines . map show
+```
+---
+
+---
+## 対話（Dialogue）
+
+対話：メッセージのやりとりの反復
+
+典型例：クライアント・サーバー系
   - サーバー：    要求列 → 応答列
   - クライアント：応答列 → 要求列
 
 ---
 ```haskell
-type Server = [Request] -> [Response]
+type Server  = [Request] -> [Response]
+
 type Client = [Response] -> [Request]
 
 server :: Server
-server = map process
+server = map service
+
+service :: Request -> Response
+service = ..
 
 client :: Request -> Client
-client req0 = (req0 :) . map next
+client req0 = (req0 :) . map query
+
+query :: Response -> Request
+query 
 ```
+
+---
 ```
                                  req0
                                   ↓
