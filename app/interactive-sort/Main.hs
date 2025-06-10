@@ -20,35 +20,45 @@ import Data.Tree
 
 import InteractiveSystem
 import PQ
+import MSort
 
 import Debug.Trace
 
 main :: IO ()
 main = do
     { args <- getArgs
-    ; let { ?svrcmd = "compare-server"; ?svrargs = const ["3"] (take 1 args) }
-    ; interaction sortPQ
+    ; let { ?svrcmd = "compare-server"; ?svrargs = take 1 args }
+    ; interaction interactiveSort
     }
 
-sortPQ :: [String] -> [String]
-sortPQ = \ case
-    r:rs -> case words r of
-        "5":"7":_ -> sortPQ3 theTree rs
+interactiveSort :: [String] -> [String]
+interactiveSort = \ case
+    r:rs -> case toTuple $ map (read @Int) $ words r of
+        (5,7)     -> sort3 theTree rs
+        (26,_)    -> encode $ pqToD sortPQ2 $ decode rs
         _         -> error "not yet implemented"
     []   -> error "no inputs"
 
-sortPQ3 :: Tree String -> ([String] -> [String])
-sortPQ3 t rs = case t of
+toTuple :: [a] -> (a,a)
+toTuple = \ case
+    x:y:_ -> (x,y)
+    _     -> error "too short list"
+
+sort3 :: Tree String -> ([String] -> [String])
+sort3 t rs = case t of
     Node a []    -> a : trace (rs !! 0) []
     Node q [l,r] -> q : case rs !! 0 of
-        "<"              -> sortPQ3 l (drop 1 rs)
-        _                -> sortPQ3 r (drop 1 rs)
+        "<"              -> sort3 l (drop 1 rs)
+        _                -> sort3 r (drop 1 rs)
     _            -> error "impossible!"
 
-
-
-
-
+sortPQ2 :: PQ ()
+sortPQ2 =   sortPQ ['A' .. 'Z'] 
+        >>= putStrPQ . fmt 
+        >>  getStrPQ 
+        >>= flip trace donePQ
+    where
+        fmt s = unwords ["!", s]
 
 -- sort tree
 
