@@ -15,7 +15,7 @@ module InteractiveSystem
 
 import System.IO
 import System.Process
-import Io
+
 
 interaction :: (?svrcmd :: String, ?svrargs :: [String])
             => ([String] -> [String]) -> IO ()

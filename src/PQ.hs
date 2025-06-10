@@ -1,4 +1,4 @@
--- # Io
+-- # PQ
 {-# LANGUAGE GHC2021 #-}
 {-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE ImportQualifiedPost #-}
@@ -9,7 +9,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE OverloadedRecordDot, NoFieldSelectors, DuplicateRecordFields #-}
 {-# LANGUAGE CPP #-}
-module Io where
+module PQ where
 
 import Control.Arrow
 import Data.Bool
@@ -42,47 +42,47 @@ encode = foldr phi [] where
         GetStr   -> ss
         PutStr s -> s : ss
 
--- Io 
+-- PQ
 
-newtype Io a = Io { action :: [Response] -> (a,[Request],[Response]) }
+newtype PQ a = PQ { action :: [Response] -> (a,[Request],[Response]) }
 
-ioToD :: Io () -> Dialogue
-ioToD io rs = case io.action rs of
+pqToD :: PQ () -> Dialogue
+pqToD io rs = case io.action rs of
     ~(_, qs, _) -> qs
 
-instance Functor Io where
-    fmap :: (a -> b) -> Io a -> Io b
-    fmap f io = Io $ \ rs -> case io.action rs of
+instance Functor PQ where
+    fmap :: (a -> b) -> PQ a -> PQ b
+    fmap f io = PQ $ \ rs -> case io.action rs of
         ~(x,qs,rs') -> (f x,qs,rs')
 
-instance Applicative Io where
-    pure :: a -> Io a
-    pure x = Io $ (x,[],)
-    (<*>) :: Io (a -> b) -> (Io a -> Io b)
-    af <*> ax = Io $ \ rs -> 
+instance Applicative PQ where
+    pure :: a -> PQ a
+    pure x = PQ $ (x,[],)
+    (<*>) :: PQ (a -> b) -> (PQ a -> PQ b)
+    af <*> ax = PQ $ \ rs -> 
         case af.action rs of
             ~(f,qs1,rs1) -> case ax.action rs1 of
                 ~(x,qs2,rs2) -> (f x, qs1 ++ qs2, rs2)
 
-instance Monad Io where
-    (>>=) :: Io a -> (a -> Io b) -> Io b
-    mx >>= f = Io $ \ rs -> 
+instance Monad PQ where
+    (>>=) :: PQ a -> (a -> PQ b) -> PQ b
+    mx >>= f = PQ $ \ rs -> 
         case mx.action rs of
             ~(x,qs1,rs1) -> case (f x).action rs1 of
                 ~(y,qs2,rs2) -> (y, qs1 ++ qs2, rs2)
 
-doneIo :: Io ()
-doneIo = pure ()
+donePQ :: PQ ()
+donePQ = pure ()
 
-getStrIo :: Io String
-getStrIo = Io $ \ rs -> 
+getStrPQ :: PQ String
+getStrPQ = PQ $ \ rs -> 
     let str = case rs !! 1 of
             OKStr s -> s
             _       -> error "unexpected response"
     in  (str,[GetStr],drop 2 rs)
 
-putStrIo :: String -> Io ()
-putStrIo str = Io $ \ rs -> ((),[PutStr str],rs)
+putStrPQ :: String -> PQ ()
+putStrPQ str = PQ $ \ rs -> ((),[PutStr str],rs)
 
 -- example echoD
 
@@ -123,19 +123,19 @@ mkLim = \ case
 limiter :: [a] -> [a]
 limiter = mkLim countSession
 
--- example echoIo
+-- example echoPQ
 
-echoIo :: Io ()
-echoIo = getStrIo >>= \ str -> if str == eof
-    then doneIo
-    else putStrIo str >> echoIo
+echoPQ :: PQ ()
+echoPQ = getStrPQ >>= \ str -> if str == eof
+    then donePQ
+    else putStrPQ str >> echoPQ
 
-reqsIo :: [String]
-reqsIo = limiter $ client_ repsIo
+reqsPQ :: [String]
+reqsPQ = limiter $ client_ repsPQ
     where
-        client_ = wrap "0" (ioToD echoIo)
+        client_ = wrap "0" (pqToD echoPQ)
 
-repsIo :: [String]
-repsIo = (++ [eof]) $ limiter $ server_ 
+repsPQ :: [String]
+repsPQ = (++ [eof]) $ limiter $ server_ 
     where
-        server_ = map (show . succ @Int . read) reqsIo
+        server_ = map (show . succ @Int . read) reqsPQ

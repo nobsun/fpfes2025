@@ -8,7 +8,7 @@ import Control.Monad.Identity
 import Data.Bool
 import System.IO
 
-import Io
+import PQ
 
 msortBy :: Monad m
         => (a -> a -> m Ordering)
@@ -78,13 +78,13 @@ cmpCharIO x y = do
         _   -> pure GT
     }
 
-sortIo :: String -> Io String
-sortIo = msortBy cmpCharIo
+sortPQ :: String -> PQ String
+sortPQ = msortBy cmpCharPQ
 
-cmpCharIo :: Char -> Char -> Io Ordering
-cmpCharIo x y = do
-    { putStrIo (unwords ["?",[x],[y]])
-    ; o <- getStrIo
+cmpCharPQ :: Char -> Char -> PQ Ordering
+cmpCharPQ x y = do
+    { putStrPQ (unwords ["?",[x],[y]])
+    ; o <- getStrPQ
     ; case o of
         "<" -> pure LT
         _   -> pure GT

@@ -19,7 +19,7 @@ import Data.List.Extra
 import Data.Tree
 
 import InteractiveSystem
-import Io
+import PQ
 
 import Debug.Trace
 
@@ -27,22 +27,22 @@ main :: IO ()
 main = do
     { args <- getArgs
     ; let { ?svrcmd = "compare-server"; ?svrargs = const ["3"] (take 1 args) }
-    ; interaction sortIo
+    ; interaction sortPQ
     }
 
-sortIo :: [String] -> [String]
-sortIo = \ case
+sortPQ :: [String] -> [String]
+sortPQ = \ case
     r:rs -> case words r of
-        "5":"7":_ -> sortIo3 theTree rs
+        "5":"7":_ -> sortPQ3 theTree rs
         _         -> error "not yet implemented"
     []   -> error "no inputs"
 
-sortIo3 :: Tree String -> ([String] -> [String])
-sortIo3 t rs = case t of
+sortPQ3 :: Tree String -> ([String] -> [String])
+sortPQ3 t rs = case t of
     Node a []    -> a : trace (rs !! 0) []
     Node q [l,r] -> q : case rs !! 0 of
-        "<"              -> sortIo3 l (drop 1 rs)
-        _                -> sortIo3 r (drop 1 rs)
+        "<"              -> sortPQ3 l (drop 1 rs)
+        _                -> sortPQ3 r (drop 1 rs)
     _            -> error "impossible!"
 
 
