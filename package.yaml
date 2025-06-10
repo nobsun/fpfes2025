@@ -77,30 +77,6 @@ library:
   source-dirs: src
 
 executables:
-  simple:
-    main:               Main.hs
-    source-dirs:        app/simple
-    ghc-options:
-    - -rtsopts
-    dependencies:
-    - fpfes2025
-
-  upcase-server:
-    main:               Main.hs
-    source-dirs:        app/upcase-server
-    ghc-options:
-    - -rtsopts
-    dependencies:
-    - fpfes2025
-
-  isort:
-    main:               Main.hs
-    source-dirs:        app/isort
-    ghc-options:
-    - -rtsopts
-    dependencies:
-    - fpfes2025
-
   compare-server:
     main:               Main.hs
     source-dirs:        app/compare-server
@@ -109,25 +85,9 @@ executables:
     dependencies:
     - fpfes2025
 
-  io:
-    main:               Main.hs
-    source-dirs:        app/io
-    ghc-options:
-    - -rtsopts
-    dependencies:
-    - fpfes2025
-
   interactive-sort:
     main:               Main.hs
     source-dirs:        app/interactive-sort
-    ghc-options:
-    - -rtsopts
-    dependencies:
-    - fpfes2025
-
-  pandi:
-    main:               Main.hs
-    source-dirs:        app/pandi
     ghc-options:
     - -rtsopts
     dependencies:

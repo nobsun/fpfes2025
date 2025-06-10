@@ -44,7 +44,8 @@ nextQ = id
 amount :: Rate -> Amount -> (Year -> Amount)
 amount r a = floor . (reqs !!) 
     where
-        reqs = client (fromIntegral a, nextQ) (server (nextPandI r) reqs)
+        reqs = client (fromIntegral a, nextQ) 
+                      (server (nextPandI r) reqs)
 {- ^
 >>> amount 0.01 10000 20
 12201

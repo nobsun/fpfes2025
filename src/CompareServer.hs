@@ -43,14 +43,17 @@ server = do
     ; let { ?balls = b; ?limit = l }
     ; service
     }
-        
+
+eof :: String
+eof = "\EOT"
+
 service :: (?balls :: Int, ?limit :: Int) => IO ()
 service = interact . wrap . flip serve res0 =<< initialize
     where
         res0 = unwords (map show [?balls, ?limit])
 
 wrap :: (?limit :: Int) => ([String] -> [String]) -> (String -> String)
-wrap f = unlines . f . take (succ ?limit) . lines
+wrap f = unlines . (++ [eof]) . f . take (succ ?limit) . lines
 
 serve :: Array Char Int -> String -> ([String] -> [String])
 serve aa res reqs = res : serve aa (response aa (take 1 reqs)) (drop 1 reqs)

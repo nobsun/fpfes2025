@@ -8,9 +8,31 @@ import Control.Monad.Identity
 import Data.Bool
 import System.IO
 
-msortBy :: Monad m 
+import Io
+
+msortBy :: Monad m
+        => (a -> a -> m Ordering)
+        -> [a] -> m [a]
+msortBy cmp xs = case halve xs of
+    ([],zs) -> pure zs
+    (ys,zs) -> merge =<< (,) <$> msortBy cmp ys <*> msortBy cmp zs
+    where
+        merge = \ case
+            ([], bs) -> pure bs
+            (as, []) -> pure as
+            (aas@(a:as), bbs@(b:bs)) -> do
+                { o <- cmp a b
+                ; case o of
+                    GT -> (b :) <$> merge (aas, bs)
+                    _  -> (a :) <$> merge (as, bbs)
+                }
+
+halve :: [a] -> ([a],[a])
+halve xs = splitAt (length xs `div` 2) xs
+
+msortBy' :: Monad m 
         => (a -> a -> m Ordering) -> [a] -> m [a]
-msortBy cmp = mergeAll <=< sequences where
+msortBy' cmp = mergeAll <=< sequences where
     sequences = \ case
         a:b:xs -> bool (ascending  b (a:) xs)
                        (descending b [a]  xs)
@@ -56,3 +78,14 @@ cmpCharIO x y = do
         _   -> pure GT
     }
 
+sortIo :: String -> Io String
+sortIo = msortBy cmpCharIo
+
+cmpCharIo :: Char -> Char -> Io Ordering
+cmpCharIo x y = do
+    { putStrIo (unwords ["?",[x],[y]])
+    ; o <- getStrIo
+    ; case o of
+        "<" -> pure LT
+        _   -> pure GT
+    }
