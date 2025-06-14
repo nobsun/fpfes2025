@@ -85,6 +85,21 @@ $$
 > 「関数的」プログラミングがしたい
 
 ---
+### 「命令的」への偏見
+```haskell
+main :: IO ()
+main = do
+    {     x <- instructio0
+    ; let y =  function0 x
+    ;     z <- instruction1 z
+    ;     instruction2
+    ; let a =  function x z
+          ..
+    ;     instructionZ xx yy
+    }
+```
+
+---
 ### 「関数的」のお気持
 
 $$
@@ -93,9 +108,10 @@ $$
 
 **関数**（function）と **関数型**（function type）
 
+
 ---
 ### 関数（function）
-
+(skip)
 $$
 \;
 $$
@@ -106,14 +122,14 @@ $$
 
 ---
 ### 関数的（functional）
-
+(skip)
 > **Functional**(also called **right-unique** or **univalent**): for all $x \in X$ and all $y,z \in Y$, if $xRy$ and $xRz$ then $y=z$.
 >
 > [WikiPedia: Binary relation](https://en.wikipedia.org/wiki/Binary_relation)
 
 ---
 ### 「関数的」のお気持
-
+(skip)
 | | 関数的 | 命令的 |
 |--|--|--|
 |思考|トップダウン|ボトムアップ|
@@ -127,8 +143,10 @@ $$
 - 対象はアイデンティティに影響しない属性をもたない
 
 ---
-### 関数、関数型
-
+### 関数、関数型（お気持）
+$$
+\;
+$$
 関数は関数型（function type）の値
 $$
 \;
@@ -137,7 +155,7 @@ $$
 
 `a` および `b` が型ならば `a -> b` は型である
 
-このとき `a` を域（domain）の型、`b` を余域（codomain）の型という
+このとき `a` を域（domain）の型、`b` を余域（codomain）の型と（ここでは）呼ぶ
 
 ---
 ### 高階関数
@@ -159,13 +177,29 @@ a -> b -> c
 と書くことが多い。
 
 ---
+
+```haskell
+f :: a -> b -> c
+```
+で
+```haskell
+uncurry f :: (a,b) -> c
+```
+を想起することがよくあるが、
+```
+f :: a -> (b -> c)
+```
+も想起できると、見え方がひろがる。たとえば、二項演算子は高階関数！？
+
+
+---
 ### 型のお気持
 
 - $\sigma$、$\tau$ が型なら $\sigma \rightarrow \tau$ も型
 - $\sigma$、$\tau$ が型なら $(\sigma,\tau)$ も型
 - $\sigma$ が型なら $[\sigma]$ も型
 - $\Tau$ が型構成子（:: Type -> Type）、$\sigma$ が型なら $\Tau\;\sigma$ は型
-- 正しく型付けされた式は値を表示する
+- **正しく型付けされた式は値を表示する**
 
 ---
 ### 命令
