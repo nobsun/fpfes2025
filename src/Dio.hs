@@ -1,4 +1,4 @@
--- # PQ
+-- # Dio
 {-# LANGUAGE GHC2021 #-}
 {-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE ImportQualifiedPost #-}
@@ -28,26 +28,38 @@ tracing = trace . show <*> id
 type Request  = String
 type Response = String
 
-type Dialogue = [Response] -> [Request]
-
 type Dio = RWS () [Request] [Response]
 
 getResponse :: Dio Response
 getResponse = get >>= (modify (drop 1) >>) . (pure . (!! 0))
 
+getResponse_do :: Dio Response
+getResponse_do = do
+    { rrs <- get
+    ; modify (drop 1)
+    ; return (rrs !! 0)
+    }
+
 putRequest :: Request -> Dio ()
 putRequest req = tell [req]
 
-echoClient :: Request -> Dio ()
-echoClient req0 = putRequest req0 >> echoLoop
+-- Client / Server 
 
-echoLoop :: Dio ()
-echoLoop = getResponse >>= \ case
-    "\EOT" -> pure ()
-    resp   -> putRequest (id resp) >> echoLoop
+client :: (Response -> Request) -> Request -> Dio ()
+client next req0 =   putRequest req0
+                 >>  getResponse
+                 >>= \ case
+                 "\EOT" -> return ()
+                 res    -> client next (next res)
+
+server :: (Request -> Response) -> [Request] -> [Response]
+server service = (++["\EOT"]) . limiter . map service
+
+echoClient :: Request -> Dio ()
+echoClient = client id
 
 incServer :: [Request] -> [Response]
-incServer = (++ ["\EOT"]) . limiter . map phi where
+incServer = server phi where
     phi = show . (succ @Int) . read
 
 resps :: [Response]
@@ -58,6 +70,3 @@ reqs = limiter $ snd $ evalRWS (echoClient "0") () resps
 
 limiter :: [a] -> [a]
 limiter = take 10
-
-
-
