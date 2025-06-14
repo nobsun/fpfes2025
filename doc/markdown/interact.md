@@ -183,7 +183,7 @@ f :: a -> b -> c
 ```
 で
 ```haskell
-uncurry f :: (a,b) -> c
+uncurry f :: (a, b) -> c
 ```
 を想起することがよくあるが、
 ```
@@ -493,6 +493,24 @@ $\qquad$ ↓
 ```                   
 { inChan = []           , outPut = Just dictN' , innerState = dictN }
 ```
+---
+
+実は、終了判定を`step`に組み込んでしまえば、`eval step dict :: [Input] -> [Output]`となるのでさらにシンプルになる。
+
+```haskell
+eval :: ((Dict, [Input]) -> Maybe (Output, (Dict, [Input])))
+     -> Dict 
+     -> ([Input] -> [Output])
+eval step_ dict0_ inputs_
+    = unfoldr step_ (dict0_, inputs_)
+
+step :: (Dict,[String]) -> Maybe ([String],(Dict,[String]))
+step = \ case
+    (dict,iis) -> list Nothing (\ i is -> Just (output (i,dict'), (dict',is)))
+
+main :: IO ()
+main = interact (unlines . eval step dict . lines)
+```
 
 ---
 ### モジュラリティ
@@ -701,11 +719,11 @@ msortBy cmp xs = case ys of
 ---
 ### 状態遷移系
 
-状態遷移系のモナド計算を実現するためには、
+状態遷移出力蓄積系のモナド計算を実現するためには、
 
 - モナド計算： `St w s` を`Monad`クラスのインスタンスとして宣言
 - 状態遷移系： `s`と`St w s` を`MonadState`クラスのインスタンスとして宣言
-- 出力蓄積： `w`と`St w s` を`MonadWriter` クラスのインスタンスとして宣言
+- 出力蓄積系： `w`と`St w s` を`MonadWriter` クラスのインスタンスとして宣言
 
 する必要があるが、ここでは `Control.Monad.RWS`モジュールのRWSモナドの仕組みを流用する。
 
@@ -828,3 +846,4 @@ cmp x y =  putStrLn (unwords ["?",[x],[y]])
 |１|まとめて入力、まとめて出力|処理の共通化とパターン照合の活用|
 |２|処理とI/Oが交互に出現|I/Oを分離をしたプログラミング|
 |３|DAG形処理と1次元形I/Oの混合|モナド計算に1次元のI/Oをつなぐ|
+
