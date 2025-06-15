@@ -1,7 +1,0 @@
-#!/bin/bash
-
-entr $1
-echo "export CURRENT_STACK_EXE_ENTRY=$1" > .curname
-
-stack build fpfes2025:exe:$1
-gen-hie > hie.yaml

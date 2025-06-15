@@ -77,14 +77,6 @@ library:
   source-dirs: src
 
 executables:
-  checkbuffering:
-    main:               Main.hs
-    source-dirs:        app/checkbuffering
-    ghc-options:
-    - -rtsopts
-    dependencies:
-    - fpfes2025
-
   compare-server:
     main:               Main.hs
     source-dirs:        app/compare-server
@@ -101,26 +93,3 @@ executables:
     dependencies:
     - fpfes2025
 
-  fpfes2025:
-    main:                Main.hs
-    source-dirs:         app
-    ghc-options:
-    - -rtsopts
-    dependencies:
-    - fpfes2025
-
-tests:
-  fpfes2025-test:
-    main:                spec.hs
-    source-dirs:         test
-    dependencies:
-    - fpfes2025
-    - hspec
-    - main-tester
-
-  fpfes2025-doctest:
-    main:                doctests.hs
-    source-dirs:         test
-    dependencies:
-    - fpfes2025
-    - doctest
