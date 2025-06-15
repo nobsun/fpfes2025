@@ -14,4 +14,3 @@ import CompareServer
 
 main :: IO ()
 main = server
-

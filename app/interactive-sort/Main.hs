@@ -1,13 +1,7 @@
 {-# LANGUAGE GHC2021 #-}
 {-# LANGUAGE ImplicitParams #-}
-{-# LANGUAGE ImportQualifiedPost #-}
-{-# LANGUAGE LexicalNegation #-}
-{-# LANGUAGE LambdaCase, MultiWayIf #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NPlusKPatterns #-}
-{-# LANGUAGE DataKinds, PolyKinds, NoStarIsType, TypeFamilyDependencies #-}
-{-# LANGUAGE OverloadedStrings #-}
-{- LANGUAGE OverloadedRecordDot, NoFieldSelectors, DuplicateRecordFields #-}
-{-# LANGUAGE CPP #-}
 module Main where
 
 import System.Environment
@@ -15,11 +9,12 @@ import System.IO
 import System.Process
 import Control.Monad.Identity
 import Data.Bool
+import Data.Char
 import Data.List.Extra
 import Data.Tree
 
 import InteractiveSystem
-import PQ
+import Dio
 import MSort
 import SortTree
 
@@ -29,21 +24,30 @@ main :: IO ()
 main = do
     { args <- getArgs
     ; let { ?svrcmd = "compare-server"; ?svrargs = take 1 args }
-    ; interaction interactiveSort
+    ; interaction solve
     }
 
-interactiveSort :: [String] -> [String]
-interactiveSort = \ case
-    r:rs -> case toTuple $ map (read @Int) $ words r of
-        (5,7)     -> sort3 theSortTree rs
-        (26,_)    -> encode $ pqToD sortPQ2 $ decode rs
-        _         -> error "not yet implemented"
-    []   -> error "no inputs"
+solve :: [String] -> [String]
+solve = snd . evalDio interactiveSorting
 
--- toTuple :: [a] -> (a,a)
--- toTuple = \ case
---     x:y:_ -> (x,y)
---     _     -> error "too short list"
+interactiveSorting :: Dio () 
+interactiveSorting = dispatch =<< getBalls
+    where
+        dispatch = \ case
+            5  -> dio (sort3 theSortTree)
+            26 -> sort2 26
+            _  -> error "unexpected number of balls"
+
+answer :: String -> Dio ()
+answer ans =  putRequest (unwords ["!", ans])
+           >> getResponse >>= \ r -> trace r return ()
+
+getBalls :: Dio Int
+getBalls = read @Int . takeWhile (not . isSpace)
+         <$> getResponse 
+
+sort2 :: Int -> Dio ()
+sort2 n = answer =<< msortBy cmpCharDio (take n ['A' ..])
 
 sort3 :: Tree String -> ([String] -> [String])
 sort3 t rs = case t of
@@ -52,12 +56,4 @@ sort3 t rs = case t of
         "<"              -> sort3 l (drop 1 rs)
         _                -> sort3 r (drop 1 rs)
     _            -> error "impossible!"
-
-sortPQ2 :: PQ ()
-sortPQ2 =   sortPQ ['A' .. 'Z'] 
-        >>= putStrPQ . fmt 
-        >>  getStrPQ 
-        >>= flip trace donePQ
-    where
-        fmt s = unwords ["!", s]
 

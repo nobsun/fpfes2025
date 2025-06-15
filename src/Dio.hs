@@ -30,6 +30,12 @@ type Response = String
 
 type Dio = RWS () [Request] [Response]
 
+dio :: ([Response] -> [Request]) -> Dio ()
+dio t = rws (\ r s -> ((),[],t s))
+
+evalDio :: Dio a -> [Response] -> (a,[Request])
+evalDio dio rs = evalRWS dio () rs
+
 getResponse :: Dio Response
 getResponse = get >>= (modify (drop 1) >>) . (pure . (!! 0))
 

@@ -1,7 +1,4 @@
 -- # CompareServer
--- 
--- ## 言語拡張と`module`宣言
-
 {-# LANGUAGE GHC2021 #-}
 {-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE ImportQualifiedPost #-}
