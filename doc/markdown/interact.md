@@ -760,10 +760,13 @@ type St w s = RWS () w s
 
 ```haskell
 main :: IO ()
-main = interact solve
+main = interacts solve
 
-solve :: String -> String
-solve = unlines . snd . evalSt action . lines
+interacts :: ([String] -> [String]) -> IO ()
+interacts f = mapM_ ((>> hFlush stdout) . putStrLn) . f . lines =<< getContents
+
+solve :: [String] -> [String]
+solve = snd . evalSt action
 
 type Dio = St [String] [String]
 ```
@@ -779,7 +782,7 @@ getBalls :: Dio Int
 getBalls = read @Int . takeWhile isDigit <$> getLn
 
 answer :: String -> Dio ()
-answer ans = tell (unwords ["!", ans])
+answer ans = tell [unwords ["!", ans]]
 
 getLn :: Dio String
 getLn = uncurry (>>) . (put . drop 1 &&& return . (!! 0)) =<< get
@@ -791,7 +794,7 @@ getLn = uncurry (>>) . (put . drop 1 &&& return . (!! 0)) =<< get
 ```haskell
 cmp :: Char -> Char -> Dio Ordering
 cmp x y =  tell [unwords ["?", [x], [y]]]
-        >> (toOrdering <$> getLn)
+        >> toOrdering <$> getLn
 
 toOrdering :: String -> Ordering
 toOrdering = \ case
@@ -820,14 +823,16 @@ solve :: IO ()
 solve = answer =<< msortBy cmp . flip take ['A' .. 'Z'] =<< getBalls
 
 answer :: String -> IO ()
-answer ans = putStrLn (unwords ["!", ans])
+answer ans =  putStrLn (unwords ["!", ans])
+           >> hFlush stdout
 
 getBall :: IO Int
 getBall = read @Int . (!! 0) . unwords <$> getLine
 
 cmp :: Char -> Char -> IO Ordering
 cmp x y =  putStrLn (unwords ["?",[x],[y]])
-        >> (toOrdering <$> getLine)
+        >> hFlush stdout
+        >> toOrdering <$> getLine
 ```
 
 ---

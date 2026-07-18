@@ -3,10 +3,17 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/topics/lock_files
 
-packages: []
+packages:
+- completed:
+    hackage: ac-library-hs-1.5.3.1@sha256:7ebc84c3de55be4e999efb674c477b0fd2bdc54773ece391c18d5002e09b4b11,7406
+    pantry-tree:
+      sha256: 21ccc641ff16cfe831f80dd528e6a1d78bd1644a4d411daab46e59f8bfb456ac
+      size: 12079
+  original:
+    hackage: ac-library-hs-1.5.3.1
 snapshots:
 - completed:
-    sha256: 9cc7614137f25ecbb5235ed92e8572328350916614ae50d8068b439115224457
-    size: 712033
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2025/6/12.yaml
-  original: nightly-2025-06-12
+    sha256: 7e724f347d5969cb5e8dde9f9aae30996e3231c29d1dafd45f21f1700d4c4fcb
+    size: 684460
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/23/28.yaml
+  original: lts-23.28
